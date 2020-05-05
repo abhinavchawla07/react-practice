@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Card, CardImg, CardImgOverlay, CardBody, CardText, CardTitle } from "reactstrap";
+import DishdetailComponent from './dishdetailComponent'
 
 class Menu extends Component {
     constructor(props) {
@@ -47,12 +48,11 @@ class Menu extends Component {
                 <div className="row">
                     {menu}
                 </div>
-                <div className="row">
-                    {this.renderDish(this.state.selectedDish)}
-                </div>
+                <DishdetailComponent dish = {this.state.selectedDish}/>
             </div>
         );
     }
 }
+
 
 export default Menu;
