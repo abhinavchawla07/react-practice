@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { Card, CardImg, CardBody, CardText, CardTitle, BreadcrumbItem, Breadcrumb, Button, Modal, ModalHeader, ModalBody, Label, Input, Row, Col } from "reactstrap";
 import { Link } from 'react-router-dom'
 import { Control, LocalForm, Errors } from 'react-redux-form';
-import {Loading } from './LoadingComponent';
+import { Loading } from './LoadingComponent';
 import { baseUrl } from '../shared/baseURL';
+import { FadeTransform, Fade, Stagger } from 'react-animation-components'
 
 const maxLength = (length) => (val) => !val || val.length <= length;
 const minLength = (length) => (val) => !val || val.length >= length;
@@ -23,7 +24,7 @@ class CommentForm extends Component {
 
     handleSubmit(values) {
         this.toggleModal();
-        this.props.postComment(this.props.dishId,values.rating,values.author,values.comment);
+        this.props.postComment(this.props.dishId, values.rating, values.author, values.comment);
     }
     render() {
         return (
@@ -87,34 +88,40 @@ function RenderComments({ comments }) {
         const commentList = comments.map((comment) => {
             return (
                 <ul>
-                    <li key={comment.id} className="row list-group-item">
-                        <div className="col-12">
-                            {comment.comment}
-                        </div>
-                        <div className="col-12">
-                            -- {comment.author}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(comment.date)))}
-                        </div>
-                    </li>
+                    <Fade in>
+                        <li key={comment.id} className="row list-group-item">
+                            <div className="col-12">
+                                {comment.comment}
+                            </div>
+                            <div className="col-12">
+                                -- {comment.author}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(comment.date)))}
+                            </div>
+                        </li>
+                    </Fade>
                 </ul>
             );
         });
-        return commentList;
+        return (
+            <Stagger in>
+                {commentList}
+            </Stagger>
+        );
     }
     else
         return (<div></div>);
 }
 
 function Dishdetail(props) {
-    if(props.isLoading){
+    if (props.isLoading) {
         return (
             <div className="container">
                 <div className="row">
-                    <Loading/>
+                    <Loading />
                 </div>
             </div>
         );
     }
-    else if(props.errMess){
+    else if (props.errMess) {
         return (
             <div className="container">
                 <div className="row">
@@ -138,13 +145,18 @@ function Dishdetail(props) {
                 </div>
                 <div className="row">
                     <div className="col-12 col-md-5 m-1">
-                        <Card>
-                            <CardImg width="100%" src={baseUrl + props.dish.image} alt={props.dish.name} />
-                            <CardBody>
-                                <CardTitle>{props.dish.name}</CardTitle>
-                                <CardText>{props.dish.description}</CardText>
-                            </CardBody>
-                        </Card>
+                        <FadeTransform in
+                            transformProps={{
+                                exitTransform: 'scale(0.5) translateY(-50%)'
+                            }}>
+                            <Card>
+                                <CardImg width="100%" src={baseUrl + props.dish.image} alt={props.dish.name} />
+                                <CardBody>
+                                    <CardTitle>{props.dish.name}</CardTitle>
+                                    <CardText>{props.dish.description}</CardText>
+                                </CardBody>
+                            </Card>
+                        </FadeTransform>
                     </div>
                     <div className="col-12 col-md-5 m-1">
                         <h4>Comments</h4>
